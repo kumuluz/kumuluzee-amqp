@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.kumuluz.ee.amqp</groupId>
+    <artifactId>kumuluzee-amqp</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <modules>
+        <module>common</module>
+        <module>rabbitmq</module>
+    </modules>
+
+    <name>KumuluzEE AMQP</name>
+
+    <inceptionYear>2019</inceptionYear>
+    <description>
+        AMQP messaging extensions for the lightweight KumuluzEE framework.
+    </description>
+
+    <url>https://ee.kumuluz.com</url>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <kumuluzee.version>3.1.0</kumuluzee.version>
+
+        <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
+        <rabbitmq.client.version>5.5.0</rabbitmq.client.version>
+    </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:kumuluz/kumuluzee-amqp.git</connection>
+        <developerConnection>scm:git:git@github.com:kumuluz/kumuluzee-amqp.git</developerConnection>
+        <url>git@github.com:kumuluz/kumuluzee-amqp.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/kumuluz/kumuluzee-amqp/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <name>Blaž Mrak</name>
+            <id>bm2156</id>
+            <email>bm2156@student.uni-lj.si</email>
+            <url>https://github.com/</url>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.kumuluz.ee</groupId>
+                <artifactId>kumuluzee-bom</artifactId>
+                <version>${kumuluzee.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee</groupId>
+                <artifactId>kumuluzee-amqp-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rabbitmq.client.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

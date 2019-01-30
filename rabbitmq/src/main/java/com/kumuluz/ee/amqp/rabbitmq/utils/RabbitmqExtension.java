@@ -1,0 +1,56 @@
+/*
+ *  Copyright (c) 2014-2019 Kumuluz and/or its affiliates
+ *  and other contributors as indicated by the @author tags and
+ *  the contributor list.
+ *
+ *  Licensed under the MIT License (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  https://opensource.org/licenses/MIT
+ *
+ *  The software is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, express or
+ *  implied, including but not limited to the warranties of merchantability,
+ *  fitness for a particular purpose and noninfringement. in no event shall the
+ *  authors or copyright holders be liable for any claim, damages or other
+ *  liability, whether in an action of contract, tort or otherwise, arising from,
+ *  out of or in connection with the software or the use or other dealings in the
+ *  software. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package com.kumuluz.ee.amqp.rabbitmq.utils;
+
+import java.util.logging.Logger;
+
+import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
+import com.kumuluz.ee.amqp.rabbitmq.config.HostInitializer;
+import com.kumuluz.ee.amqp.rabbitmq.utils.other.ConnectionInitializer;
+import com.kumuluz.ee.common.Extension;
+import com.kumuluz.ee.common.config.EeConfig;
+import com.kumuluz.ee.common.dependencies.EeComponentDependency;
+import com.kumuluz.ee.common.dependencies.EeComponentType;
+import com.kumuluz.ee.common.dependencies.EeExtensionDef;
+import com.kumuluz.ee.common.dependencies.EeExtensionGroup;
+import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
+
+/**
+ * RabbitmqExtension class
+ *
+ * @author Blaž Mrak
+ * @since 1.0.0
+ */
+
+@EeExtensionDef(name = "RabbitMQ", group = "AMQP")
+@EeComponentDependency(EeComponentType.CDI)
+public class RabbitmqExtension implements Extension{
+
+    private static final Logger log = Logger.getLogger(RabbitmqExtension.class.getName());
+
+    public void init(KumuluzServerWrapper kumuluzServerWrapper, EeConfig eeConfig) {
+        log.info("Initialising Kumuluz Messaging extension.");
+    }
+
+    public void load() {
+    }
+}

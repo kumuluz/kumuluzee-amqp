@@ -1,0 +1,2 @@
+com.kumuluz.ee.amqp.rabbitmq.utils.consumer.ConsumerInitializer
+com.kumuluz.ee.amqp.rabbitmq.utils.other.ConnectionInitializer
