@@ -14,6 +14,16 @@
     <dependencies>
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-cdi-weld</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee.amqp</groupId>
             <artifactId>kumuluzee-amqp-common</artifactId>
         </dependency>
         <dependency>
