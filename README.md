@@ -1,5 +1,5 @@
 # KumuluzEE AMQP
-[![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-ethereum/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-ethereum)
+[![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-amqp/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-amqp)
 
 KumuluzEE AMQP project for development of messaging applications.
 
