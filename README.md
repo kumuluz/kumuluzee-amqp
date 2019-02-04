@@ -207,7 +207,7 @@ To send a message to a specific queue, you just have to remove the exchange from
 
 ## Sample
 
-You can start by using the [sample code](https://github.com/kumuluz/kumuluzee-samples/tree/master/amqp/rabbitmq).
+You can start by using the [sample code](https://github.com/kumuluz/kumuluzee-samples/tree/master/kumuluzee-amqp-rabbitmq).
 
 ## Changelog
 
