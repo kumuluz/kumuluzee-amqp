@@ -76,7 +76,7 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.kumuluz.ee</groupId>
+                <groupId>com.kumuluz.ee.amqp</groupId>
                 <artifactId>kumuluzee-amqp-common</artifactId>
                 <version>${project.version}</version>
             </dependency>

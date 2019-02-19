@@ -118,8 +118,11 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                             throws IOException {
                         Object message = null;
                         try {
+							if(properties == null){
+								message = body;
+							}
                             //Check if we are receiving plain text
-                            if(properties.getContentType() != null && properties.getContentType().equals("text/plain")){
+                            else if(properties.getContentType() != null && properties.getContentType().equals("text/plain")){
                                 message = new String(body, "UTF-8");
                             } else {
                                 message = SerializationUtil.getInstance().deserialize(body);
