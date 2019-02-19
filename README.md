@@ -1,5 +1,5 @@
 # KumuluzEE AMQP
-[![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-ethereum/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-ethereum)
+[![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-amqp/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-amqp)
 
 KumuluzEE AMQP project for development of messaging applications.
 
@@ -207,7 +207,23 @@ To send a message to a specific queue, you just have to remove the exchange from
 
 ## Sample
 
-You can start by using the [sample code](https://github.com/kumuluz/kumuluzee-samples/tree/master/amqp/rabbitmq).
+You can start by using the [sample code](https://github.com/kumuluz/kumuluzee-samples/tree/master/kumuluzee-amqp-rabbitmq).
+
+## Changelog
+
+Recent changes can be viewed on Github on the [Releases Page](https://github.com/kumuluz/kumuluzee-amqp/releases)
+
+## Contribute
+
+See the [contributing docs](https://github.com/kumuluz/kumuluzee-amqp/blob/master/CONTRIBUTING.md)
+
+When submitting an issue, please follow the 
+[guidelines](https://github.com/kumuluz/kumuluzee-amqp/blob/master/CONTRIBUTING.md#bugs).
+
+When submitting a bugfix, write a test that exposes the bug and fails before applying your fix. Submit the test
+alongside the fix.
+
+When submitting a new feature, add tests that cover the feature.
 
 ## License
 
