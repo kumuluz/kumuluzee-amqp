@@ -134,42 +134,57 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
                             throws IOException {
-                        Object[] args = null;
-                        try {
-                            args = new Object[parameterCount];
+                        Object[] args = new Object[parameterCount];
 
-                            //Create a message
-                            //Check if the method expects a string
-                            if(params[0].equals(String.class)){
-                                try{
-                                    args[0] = params[0].cast(SerializationUtil.deserialize(body));
-                                } catch(Exception e){
-                                    args[0] = new String(body, "UTF-8");
-                                }
-                            } else {
-                                args[0] = params[0].cast(SerializationUtil.deserialize(body));
-                            }
+                        //If there are two parameters
+                        if(parameterCount == 2){
+                            MessageInfo messageInfo = new MessageInfo();
+                            messageInfo.setChannel(this.getChannel());
+                            messageInfo.setConsumerTag(consumerTag);
+                            messageInfo.setEnvelope(envelope);
+                            messageInfo.setProperties(properties);
 
-                            //If there are two parameters
-                            if(parameterCount == 2){
-                                MessageInfo messageInfo = new MessageInfo();
-                                messageInfo.setChannel(this.getChannel());
-                                messageInfo.setConsumerTag(consumerTag);
-                                messageInfo.setEnvelope(envelope);
-                                messageInfo.setProperties(properties);
-
-                                args[1] = messageInfo;
-                            }
-                        } catch (ClassNotFoundException e) {
-                            log.severe(e.getLocalizedMessage());
+                            args[1] = messageInfo;
                         }
 
                         Object instance = bm.getReference(inst.getBean(), method.getDeclaringClass(), bm.createCreationalContext(inst.getBean()));
 
-                        try {
-                            method.invoke(instance, args);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                        //Create a message
+                        //Check if the method expects a string
+                        if(params[0].equals(String.class)){
+                            try{
+                                args[0] = params[0].cast(SerializationUtil.deserialize(body));
+
+                                try {
+                                    method.invoke(instance, args);
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                }
+                            } catch (ClassNotFoundException e) {
+                                log.severe(e.getLocalizedMessage());
+                            } catch(Exception e){
+                                args[0] = new String(body, "UTF-8");
+
+                                try {
+                                    method.invoke(instance, args);
+                                } catch (IllegalAccessException | InvocationTargetException ex) {
+                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                }
+                            }
+                        } else {
+                            try{
+                                args[0] = params[0].cast(SerializationUtil.deserialize(body));
+
+                                try {
+                                    method.invoke(instance, args);
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                }
+                            } catch (ClassNotFoundException e) {
+                                log.severe(e.getLocalizedMessage());
+                            } catch(Exception e){
+                                log.warning("The message received was not of type: " + params[0].getName());
+                            }
                         }
                     }
                 };
