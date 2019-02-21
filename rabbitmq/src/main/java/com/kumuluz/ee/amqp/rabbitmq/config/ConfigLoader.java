@@ -158,6 +158,10 @@ public class ConfigLoader {
     }
 
     public BasicProperties getBasicProperties(String properties){
+        if(properties == null){
+            return null;
+        }
+
         ConfigurationUtil config = ConfigurationUtil.getInstance();
         String prefix = "kumuluzee.amqp.rabbitmq.properties";
         Optional<Integer> propertiesSize = config.getListSize(prefix);

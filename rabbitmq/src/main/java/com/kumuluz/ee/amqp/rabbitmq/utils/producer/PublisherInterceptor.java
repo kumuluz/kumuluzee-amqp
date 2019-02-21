@@ -116,7 +116,7 @@ public class PublisherInterceptor {
             basicProperties = getMessageProperties(property);
 
             //Check if we are sending plain text
-            if(result instanceof String && basicProperties.getContentType().equals("text/plain")){
+            if(result instanceof String && "text/plain".equals(basicProperties.getContentType())){
                 body = ((String) result).getBytes();
             } else{
                 body = SerializationUtil.serialize(result);

@@ -118,7 +118,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                 //If there are two parameters
                 if(parameterCount == 2){
                     //If the second parameter is not MessageInfo
-                    if(!params[1].getClass().equals(MessageInfo.class)){
+                    if(!params[1].equals(MessageInfo.class)){
                         throw new IllegalArgumentException("Second parameter in method " + method.getName() + " must be MessageInfo");
                     }
                 }
