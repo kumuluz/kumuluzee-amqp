@@ -30,14 +30,13 @@ import com.rabbitmq.client.Envelope;
  * @since 1.0.0
  */
 
-public class ConsumerMessage {
+public class MessageInfo {
     private String consumerTag;
     private Envelope envelope;
     private AMQP.BasicProperties properties;
-    private Object body;
     private Channel channel;
 
-    public ConsumerMessage() { }
+    public MessageInfo() { }
 
     public String getConsumerTag() {
         return consumerTag;
@@ -61,14 +60,6 @@ public class ConsumerMessage {
 
     public void setProperties(AMQP.BasicProperties properties) {
         this.properties = properties;
-    }
-
-    public Object getBody() {
-        return body;
-    }
-
-    public void setBody(Object body) {
-        this.body = body;
     }
 
     public Channel getChannel() {

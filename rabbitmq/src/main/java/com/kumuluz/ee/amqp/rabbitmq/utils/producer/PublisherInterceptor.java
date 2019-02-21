@@ -104,7 +104,7 @@ public class PublisherInterceptor {
 
                 body = ((String) message.getBody()).getBytes();
             } else {
-                body = SerializationUtil.getInstance().serialize(message.getBody());
+                body = SerializationUtil.serialize(message.getBody());
             }
 
             if(message.getBasicProperties() == null && !property.equals("")){
@@ -113,13 +113,14 @@ public class PublisherInterceptor {
                 basicProperties = message.getBasicProperties();
             }
         } else {
+            basicProperties = getMessageProperties(property);
+
             //Check if we are sending plain text
-            if(result instanceof String && (property.equals("textPlain") || property.equals("persistentTextPlain"))){
+            if(result instanceof String && basicProperties.getContentType().equals("text/plain")){
                 body = ((String) result).getBytes();
             } else{
-                body = SerializationUtil.getInstance().serialize(result);
+                body = SerializationUtil.serialize(result);
             }
-            basicProperties = getMessageProperties(property);
         }
 
         for (int i = 0; i < keys.length; i++) {

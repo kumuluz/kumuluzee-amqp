@@ -39,16 +39,9 @@ public class SerializationUtil {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         return objectInputStream.readObject();
-    }
-
-    public static SerializationUtil getInstance(){
-        if(instance == null){
-            instance = new SerializationUtil();
-        }
-        return instance;
     }
 }

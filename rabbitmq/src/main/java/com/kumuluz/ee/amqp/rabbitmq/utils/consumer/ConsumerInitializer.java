@@ -112,33 +112,57 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                     }
                 };*/
 
+                int parameterCount = method.getParameterCount();
+                Class[] params = method.getParameterTypes();
+
+                //If there are two parameters
+                if(parameterCount == 2){
+                    //If the second parameter is not MessageInfo
+                    if(!params[1].getClass().equals(MessageInfo.class)){
+                        log.severe("Second parameter in method " + method.getName() + " must be MessageInfo");
+                    }
+                }
+
+                //Else
+                else if(parameterCount == 0){
+                    throw new IllegalArgumentException("There must be at least 1 parameter in the method " + method.getName());
+                } else if(parameterCount > 2){
+                    log.severe("There must be at most 2 parameters in the method " + method.getName());
+                }
+
                 Consumer consumer = new DefaultConsumer(channel) {
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
                             throws IOException {
-                        Object message = null;
+                        Object[] args = null;
                         try {
-							if(properties == null){
-								message = body;
-							}
-                            //Check if we are receiving plain text
-                            else if(properties.getContentType() != null && properties.getContentType().equals("text/plain")){
-                                message = new String(body, "UTF-8");
+                            args = new Object[parameterCount];
+
+                            //Create a message
+                            //Check if the method expects a string
+                            if(params[0].equals(String.class)){
+                                try{
+                                    args[0] = params[0].cast(SerializationUtil.deserialize(body));
+                                } catch(Exception e){
+                                    args[0] = new String(body, "UTF-8");
+                                }
                             } else {
-                                message = SerializationUtil.getInstance().deserialize(body);
+                                args[0] = params[0].cast(SerializationUtil.deserialize(body));
+                            }
+
+                            //If there are two parameters
+                            if(parameterCount == 2){
+                                MessageInfo messageInfo = new MessageInfo();
+                                messageInfo.setChannel(this.getChannel());
+                                messageInfo.setConsumerTag(consumerTag);
+                                messageInfo.setEnvelope(envelope);
+                                messageInfo.setProperties(properties);
+
+                                args[1] = messageInfo;
                             }
                         } catch (ClassNotFoundException e) {
                             log.severe(e.getLocalizedMessage());
                         }
-
-                        ConsumerMessage consumerMessage = new ConsumerMessage();
-                        consumerMessage.setBody(message);
-                        consumerMessage.setChannel(this.getChannel());
-                        consumerMessage.setConsumerTag(consumerTag);
-                        consumerMessage.setEnvelope(envelope);
-                        consumerMessage.setProperties(properties);
-
-                        Object[] args = new Object[]{consumerMessage};
 
                         Object instance = bm.getReference(inst.getBean(), method.getDeclaringClass(), bm.createCreationalContext(inst.getBean()));
 
