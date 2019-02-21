@@ -119,7 +119,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                 if(parameterCount == 2){
                     //If the second parameter is not MessageInfo
                     if(!params[1].getClass().equals(MessageInfo.class)){
-                        log.severe("Second parameter in method " + method.getName() + " must be MessageInfo");
+                        throw new IllegalArgumentException("Second parameter in method " + method.getName() + " must be MessageInfo");
                     }
                 }
 
@@ -127,7 +127,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                 else if(parameterCount == 0){
                     throw new IllegalArgumentException("There must be at least 1 parameter in the method " + method.getName());
                 } else if(parameterCount > 2){
-                    log.severe("There must be at most 2 parameters in the method " + method.getName());
+                    throw new IllegalArgumentException("There must be at most 2 parameters in the method " + method.getName());
                 }
 
                 Consumer consumer = new DefaultConsumer(channel) {
