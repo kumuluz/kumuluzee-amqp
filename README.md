@@ -132,7 +132,8 @@ You can obtain RabbitMQ Channel by using `@AMQPChannel`. Then you can use this c
 ```
 ## Consuming messages
 In order to listen to queues you can annotate your method with `@AMQPConsumer`.
-You must add ConsumerMessage parameter which will allow you to obtain details about the recieved messages. 
+The first parameter of the annotated method is the object of type that is expected to be received, the second parameter is optional and must be of type MessageInfo which will allow you to obtain details about the received messages.
+If the message body cannot be deserialized to the expected type the method will not be invoked and an error will be logged.
 
 ```java
 @AMQPConsumer(
@@ -145,10 +146,13 @@ autoAck: boolean - true
 ```
 
 ```java
-@AMQPConsumer(host="MQtest", exchange="directExchange", key="secret")
-    public void listenToDirectExchange(ConsumerMessage consumerMessage){
-        ...
-   }
+@AMQPConsumer(...)
+public void listenToDirectExchange(
+message: any, 
+info: MessageInfo - optional
+){
+    ...
+}
 ```
 
 ## Send messages
