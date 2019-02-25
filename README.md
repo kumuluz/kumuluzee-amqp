@@ -3,11 +3,11 @@
 
 KumuluzEE AMQP project for development of messaging applications.
 
-KumuluzEE AMQP enables you to easily send and recieve messages. We will be using the RabbitMQ implementation in this example. The RabbitMQ documentation can be found [here](https://www.rabbitmq.com/).
+KumuluzEE AMQP enables you to easily send and recieve messages over the AMQP protocol. Currenty it includes the RabbitMQ-based implementation. The RabbitMQ documentation can be found [here](https://www.rabbitmq.com/).
 
 ## Usage
 
-You can enable KumuluzEE RabbitMQ support by adding the following dependency to pom.xml:
+You can enable KumuluzEE AMQP RabbitMQ support by adding the following dependency to pom.xml:
 ```xml
 <dependency>
     <groupId>com.kumuluz.ee.amqp</groupId>
