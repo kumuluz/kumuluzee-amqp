@@ -21,11 +21,6 @@
 
 package com.kumuluz.ee.amqp.rabbitmq.utils;
 
-import java.util.logging.Logger;
-
-import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
-import com.kumuluz.ee.amqp.rabbitmq.config.HostInitializer;
-import com.kumuluz.ee.amqp.rabbitmq.utils.other.ConnectionInitializer;
 import com.kumuluz.ee.common.Extension;
 import com.kumuluz.ee.common.config.EeConfig;
 import com.kumuluz.ee.common.dependencies.EeComponentDependency;
@@ -34,6 +29,8 @@ import com.kumuluz.ee.common.dependencies.EeExtensionDef;
 import com.kumuluz.ee.common.dependencies.EeExtensionGroup;
 import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
 
+import java.util.logging.Logger;
+
 /**
  * RabbitmqExtension class
  *
@@ -41,9 +38,9 @@ import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
  * @since 1.0.0
  */
 
-@EeExtensionDef(name = "RabbitMQ", group = "AMQP")
+@EeExtensionDef(name = "RabbitMQ", group = EeExtensionGroup.AMQP)
 @EeComponentDependency(EeComponentType.CDI)
-public class RabbitmqExtension implements Extension{
+public class RabbitmqExtension implements Extension {
 
     private static final Logger log = Logger.getLogger(RabbitmqExtension.class.getName());
 
