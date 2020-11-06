@@ -21,10 +21,13 @@
 package com.kumuluz.ee.amqp.rabbitmq.utils.producer;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPProducer;
-import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
 import com.kumuluz.ee.amqp.common.utils.SerializationUtil;
+import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
 import com.kumuluz.ee.amqp.rabbitmq.utils.other.RabbitConnection;
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.MessageProperties;
 
 import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
@@ -61,17 +64,17 @@ public class PublisherInterceptor {
         String[] keys = annotation.key();
         String property = annotation.properties();
 
-        if(result instanceof Message){
+        if (result instanceof Message) {
             Message message = (Message) result;
-            if(message.getHost() != null){
+            if (message.getHost() != null) {
                 host = message.getHost();
             }
 
-            if(message.getExchange() != null){
+            if (message.getExchange() != null) {
                 exchange = message.getExchange();
             }
 
-            if(message.getKey() != null){
+            if (message.getKey() != null) {
                 keys = message.getKey();
             }
         }
@@ -93,20 +96,20 @@ public class PublisherInterceptor {
         }
 
         //Check if it is an instance of Message
-        if(result instanceof Message){
+        if (result instanceof Message) {
             Message message = (Message) result;
 
             //Check if we are sending plain text
-            if(message.getBody() instanceof String &&
-                message.getBasicProperties() != null &&
-                message.getBasicProperties().getContentType().equals("text/plain")){
+            if (message.getBody() instanceof String &&
+                    message.getBasicProperties() != null &&
+                    message.getBasicProperties().getContentType().equals("text/plain")) {
 
                 body = ((String) message.getBody()).getBytes();
             } else {
                 body = SerializationUtil.serialize(message.getBody());
             }
 
-            if(message.getBasicProperties() == null && !property.equals("")){
+            if (message.getBasicProperties() == null && !property.equals("")) {
                 basicProperties = getMessageProperties(property);
             } else {
                 basicProperties = message.getBasicProperties();
@@ -115,9 +118,9 @@ public class PublisherInterceptor {
             basicProperties = getMessageProperties(property);
 
             //Check if we are sending plain text
-            if(result instanceof String && "text/plain".equals(basicProperties.getContentType())){
+            if (result instanceof String && "text/plain".equals(basicProperties.getContentType())) {
                 body = ((String) result).getBytes();
-            } else{
+            } else {
                 body = SerializationUtil.serialize(result);
             }
         }
@@ -136,17 +139,24 @@ public class PublisherInterceptor {
         return result;
     }
 
-    private AMQP.BasicProperties getMessageProperties(String property){
+    private AMQP.BasicProperties getMessageProperties(String property) {
         AMQP.BasicProperties basicProperties = ConfigLoader.getInstance().getBasicProperties(property);
-        if(basicProperties == null){
-            switch(property){
-                case "minimalBasic": return MessageProperties.MINIMAL_BASIC;
-                case "basic": return MessageProperties.BASIC;
-                case "minimalPersistentBasic": return MessageProperties.MINIMAL_PERSISTENT_BASIC;
-                case "textPlain": return MessageProperties.TEXT_PLAIN;
-                case "persistentTextPlain": return MessageProperties.PERSISTENT_TEXT_PLAIN;
-                case "persistentBasic": return MessageProperties.PERSISTENT_BASIC;
-                default: return MessageProperties.MINIMAL_BASIC;
+        if (basicProperties == null) {
+            switch (property) {
+                case "minimalBasic":
+                    return MessageProperties.MINIMAL_BASIC;
+                case "basic":
+                    return MessageProperties.BASIC;
+                case "minimalPersistentBasic":
+                    return MessageProperties.MINIMAL_PERSISTENT_BASIC;
+                case "textPlain":
+                    return MessageProperties.TEXT_PLAIN;
+                case "persistentTextPlain":
+                    return MessageProperties.PERSISTENT_TEXT_PLAIN;
+                case "persistentBasic":
+                    return MessageProperties.PERSISTENT_BASIC;
+                default:
+                    return MessageProperties.MINIMAL_BASIC;
             }
         } else {
             return basicProperties;

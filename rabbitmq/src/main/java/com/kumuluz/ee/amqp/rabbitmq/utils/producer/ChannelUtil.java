@@ -44,7 +44,7 @@ public class ChannelUtil {
 
     @Produces
     @AMQPChannel
-    public Channel getChannel(InjectionPoint injectionPoint){
+    public Channel getChannel(InjectionPoint injectionPoint) {
         String name = injectionPoint.getAnnotated().getAnnotation(AMQPChannel.class).value();
         Connection connection = RabbitConnection.getConnection(name);
         Channel channel = null;

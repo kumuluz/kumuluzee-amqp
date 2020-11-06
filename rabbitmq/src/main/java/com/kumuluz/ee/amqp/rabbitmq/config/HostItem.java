@@ -54,7 +54,8 @@ public class HostItem {
     private List<Exchange> exchanges = new ArrayList<>();
     private List<Queue> queues = new ArrayList<>();
 
-    public HostItem(){ }
+    public HostItem() {
+    }
 
     public String getName() {
         return name;

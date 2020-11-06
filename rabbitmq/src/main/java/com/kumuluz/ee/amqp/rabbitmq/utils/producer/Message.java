@@ -34,7 +34,8 @@ public class Message {
     private String[] key;
     private String host;
 
-    public Message(){ }
+    public Message() {
+    }
 
     public AMQP.BasicProperties getBasicProperties() {
         return basicProperties;

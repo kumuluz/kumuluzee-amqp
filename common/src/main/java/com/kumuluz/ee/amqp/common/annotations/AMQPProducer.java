@@ -34,7 +34,10 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface AMQPProducer {
     @Nonbinding String host() default "";
+
     @Nonbinding String exchange() default "";
+
     @Nonbinding String[] key() default {""};
+
     @Nonbinding String properties() default "";
 }

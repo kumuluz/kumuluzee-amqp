@@ -34,7 +34,8 @@ public class Queue {
     private boolean autoDelete;
     private Map<String, Object> arguments;
 
-    public Queue(){}
+    public Queue() {
+    }
 
     public String getName() {
         return name;

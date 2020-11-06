@@ -36,8 +36,12 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface AMQPConsumer {
     @Nonbinding String host() default "";
+
     @Nonbinding String exchange() default "";
+
     @Nonbinding String[] key() default {""};
+
     @Nonbinding boolean autoAck() default true;
+
     @Nonbinding int prefetch() default 100;
 }

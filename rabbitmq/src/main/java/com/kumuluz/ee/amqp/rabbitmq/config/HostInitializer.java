@@ -37,12 +37,19 @@ import java.util.logging.Logger;
  */
 public class HostInitializer {
 
-    private static HostInitializer instance;
     private static final Logger LOG = Logger.getLogger(HostInitializer.class.getName());
+    private static HostInitializer instance;
 
-    public void initializeRabbitmq(){
+    public static HostInitializer getInstance() {
+        if (instance == null) {
+            instance = new HostInitializer();
+        }
+        return instance;
+    }
+
+    public void initializeRabbitmq() {
         List<HostItem> hosts = ConfigLoader.getInstance().getHostsData();
-        for(HostItem host : hosts){
+        for (HostItem host : hosts) {
             Connection connection = RabbitConnection.getConnection(host.getName());
             Channel channel;
 
@@ -52,7 +59,7 @@ public class HostInitializer {
                 throw new IllegalStateException("Could not create channel.", e);
             }
 
-            for(Exchange exchange : host.getExchanges()){
+            for (Exchange exchange : host.getExchanges()) {
                 try {
                     channel.exchangeDeclare(exchange.getName(), exchange.getType(), exchange.isDurable(), exchange.isAutoDelete(), exchange.getArguments());
                 } catch (IOException e) {
@@ -60,20 +67,13 @@ public class HostInitializer {
                 }
             }
 
-            for(Queue queue: host.getQueues()){
-                try{
+            for (Queue queue : host.getQueues()) {
+                try {
                     channel.queueDeclare(queue.getName(), queue.isDurable(), queue.isExclusive(), queue.isAutoDelete(), queue.getArguments());
                 } catch (IOException e) {
                     LOG.log(Level.SEVERE, "Could not create a queue: ", e);
                 }
             }
         }
-    }
-
-    public static HostInitializer getInstance(){
-        if(instance == null){
-            instance = new HostInitializer();
-        }
-        return instance;
     }
 }

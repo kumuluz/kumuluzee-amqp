@@ -34,7 +34,8 @@ public class Exchange {
     private Boolean autoDelete;
     private Map<String, Object> arguments;
 
-    public Exchange(){}
+    public Exchange() {
+    }
 
     public String getName() {
         return name;

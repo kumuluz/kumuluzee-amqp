@@ -34,7 +34,8 @@ public class MessageInfo {
     private AMQP.BasicProperties properties;
     private Channel channel;
 
-    public MessageInfo() { }
+    public MessageInfo() {
+    }
 
     public String getConsumerTag() {
         return consumerTag;

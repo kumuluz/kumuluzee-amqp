@@ -36,11 +36,18 @@ public class ConfigLoader {
 
     private static ConfigLoader instance;
 
+    public static ConfigLoader getInstance() {
+        if (instance == null) {
+            instance = new ConfigLoader();
+        }
+        return instance;
+    }
+
     private Supplier<IllegalStateException> configNotFoundException(String configKey) {
         return () -> new IllegalStateException("Configuration key '" + configKey + "' required but not found.");
     }
 
-    public HostItem getHost(String host){
+    public HostItem getHost(String host) {
         String prefix = "kumuluzee.amqp.rabbitmq.hosts";
         HostItem hostItem = new HostItem();
         ConfigurationUtil config = ConfigurationUtil.getInstance();
@@ -49,9 +56,9 @@ public class ConfigLoader {
             return null;
         }
 
-        for(int i = 0; i < size.get(); i++){
+        for (int i = 0; i < size.get(); i++) {
             String name = config.get(prefix + "[" + i + "]" + ".name").orElseThrow(configNotFoundException(prefix + "[" + i + "]" + ".name"));
-            if(name.equals(host)) {
+            if (name.equals(host)) {
                 hostItem.setName(name);
                 hostItem.setUrl(config.get(prefix + "[" + i + "]" + ".url").orElse(null));
                 hostItem.setAutomaticRecoveryEnabled(config.getBoolean(prefix + "[" + i + "]" + ".automaticRecoveryEnabled").orElse(null));
@@ -80,7 +87,7 @@ public class ConfigLoader {
         return null;
     }
 
-    public Map<String, Object> getMap(String path){
+    public Map<String, Object> getMap(String path) {
         ConfigurationUtil config = ConfigurationUtil.getInstance();
         Map<String, Object> map = new HashMap<>();
         Optional<List<String>> keys = config.getMapKeys(path);
@@ -89,31 +96,49 @@ public class ConfigLoader {
         }
 
         List<String> testKeys = keys.get();
-        for(String key : testKeys){
-            switch(config.getType(path + "." + key).orElseThrow(configNotFoundException(path + "." + key))){
-                case BOOLEAN: map.put(key, config.getBoolean(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case INTEGER: map.put(key, config.getInteger(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case STRING: map.put(key, config.get(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case DOUBLE: map.put(key, config.getDouble(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case FLOAT: map.put(key, config.getFloat(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case MAP: map.put(key, getMap(path + "." + key));
-                case LONG: map.put(key, config.getLong(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
-                case LIST: map.put(key, "list");
-                default: map.put(key, null);
+        for (String key : testKeys) {
+            switch (config.getType(path + "." + key).orElseThrow(configNotFoundException(path + "." + key))) {
+                case BOOLEAN:
+                    map.put(key, config.getBoolean(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case INTEGER:
+                    map.put(key, config.getInteger(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case STRING:
+                    map.put(key, config.get(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case DOUBLE:
+                    map.put(key, config.getDouble(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case FLOAT:
+                    map.put(key, config.getFloat(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case MAP:
+                    map.put(key, getMap(path + "." + key));
+                    break;
+                case LONG:
+                    map.put(key, config.getLong(path + "." + key).orElseThrow(configNotFoundException(path + "." + key)));
+                    break;
+                case LIST:
+                    map.put(key, "list");
+                    break;
+                default:
+                    map.put(key, null);
+                    break;
             }
         }
 
         return map;
     }
 
-    public List<Exchange> getExchanges(int host){
+    public List<Exchange> getExchanges(int host) {
         List<Exchange> exchanges = new ArrayList<>();
         String prefix = "kumuluzee.amqp.rabbitmq.hosts";
         ConfigurationUtil config = ConfigurationUtil.getInstance();
 
         Optional<Integer> exchangesSize = config.getListSize(prefix + "[" + host + "]" + ".exchanges");
-        if(exchangesSize.isPresent()){
-            for(int j = 0; j < exchangesSize.get(); j++){
+        if (exchangesSize.isPresent()) {
+            for (int j = 0; j < exchangesSize.get(); j++) {
                 Exchange newExchange = new Exchange();
                 newExchange.setName(config.get(prefix + "[" + host + "]" + ".exchanges[" + j + "].name").orElseThrow(configNotFoundException(prefix + "[" + host + "]" + ".exchanges[" + j + "].name")));
                 newExchange.setType(config.get(prefix + "[" + host + "]" + ".exchanges[" + j + "].type").orElse("fanout"));
@@ -126,14 +151,14 @@ public class ConfigLoader {
         return exchanges;
     }
 
-    public List<Queue> getQueues(int host){
+    public List<Queue> getQueues(int host) {
         List<Queue> queues = new ArrayList<>();
         String prefix = "kumuluzee.amqp.rabbitmq.hosts";
         ConfigurationUtil config = ConfigurationUtil.getInstance();
 
         Optional<Integer> queuesSize = config.getListSize(prefix + "[" + host + "]" + ".queues");
-        if(queuesSize.isPresent()){
-            for(int j = 0; j < queuesSize.get(); j++){
+        if (queuesSize.isPresent()) {
+            for (int j = 0; j < queuesSize.get(); j++) {
                 Queue newQueue = new Queue();
                 newQueue.setName(config.get(prefix + "[" + host + "]" + ".queues[" + j + "].name").orElseThrow(configNotFoundException(prefix + "[" + host + "]" + ".queues[" + j + "].name")));
                 newQueue.setExclusive(config.getBoolean(prefix + "[" + host + "]" + ".queues[" + j + "].exclusive").orElse(false));
@@ -162,8 +187,8 @@ public class ConfigLoader {
         return hosts;
     }
 
-    public BasicProperties getBasicProperties(String properties){
-        if(properties == null){
+    public BasicProperties getBasicProperties(String properties) {
+        if (properties == null) {
             return null;
         }
 
@@ -175,16 +200,16 @@ public class ConfigLoader {
             return null;
         }
 
-        for(int i = 0; i < propertiesSize.get(); i++){
-            if(properties.equals(config.get(prefix + "[" + i + "].name").orElseThrow(configNotFoundException(prefix + "[" + i + "].name")))){
+        for (int i = 0; i < propertiesSize.get(); i++) {
+            if (properties.equals(config.get(prefix + "[" + i + "].name").orElseThrow(configNotFoundException(prefix + "[" + i + "].name")))) {
                 String propertyPath = prefix + "[" + i + "]";
                 String contentType = config.get(propertyPath + ".contentType").orElse(null);
                 String contentEncoding = config.get(propertyPath + ".contentEncoding").orElse(null);
                 Map<String, Object> headers = new HashMap<>();
                 Optional<List<String>> headerKeys = config.getMapKeys(propertyPath + ".headers");
-                if(headerKeys.isPresent()){
+                if (headerKeys.isPresent()) {
                     List<String> keys = headerKeys.get();
-                    for(String key : keys){
+                    for (String key : keys) {
                         headers.put(key, config.get(propertyPath + ".headers." + key).orElseThrow(configNotFoundException(propertyPath + ".headers." + key)));
                     }
                 }
@@ -222,12 +247,5 @@ public class ConfigLoader {
         }
 
         return null;
-    }
-
-    public static ConfigLoader getInstance(){
-        if(instance == null){
-            instance = new ConfigLoader();
-        }
-        return instance;
     }
 }

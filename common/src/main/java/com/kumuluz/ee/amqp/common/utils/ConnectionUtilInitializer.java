@@ -28,7 +28,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An interface which finds methods and classes annotated with AMQPConnection
@@ -41,15 +43,15 @@ public interface ConnectionUtilInitializer extends Extension {
     List<AnnotatedMethod<AMQPConnection>> methodList = new ArrayList<>();
 
     default <X> void processRabbitConnection(@Observes ProcessBean<X> pat) {
-        if(pat.getBean().getBeanClass().getAnnotation(AMQPConnection.class) != null){
-            for(Method method : pat.getBean().getBeanClass().getMethods()){
-                if(method.getReturnType().equals(Map.class)){
+        if (pat.getBean().getBeanClass().getAnnotation(AMQPConnection.class) != null) {
+            for (Method method : pat.getBean().getBeanClass().getMethods()) {
+                if (method.getReturnType().equals(Map.class)) {
                     methodList.add(new AnnotatedMethod<>(pat.getBean(), method, null));
                 }
             }
         } else {
-            for(Method method : pat.getBean().getBeanClass().getMethods()){
-                if(method.getAnnotation(AMQPConnection.class) != null){
+            for (Method method : pat.getBean().getBeanClass().getMethods()) {
+                if (method.getAnnotation(AMQPConnection.class) != null) {
                     methodList.add(new AnnotatedMethod<>(pat.getBean(), method, null));
                 }
             }

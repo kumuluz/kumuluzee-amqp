@@ -76,7 +76,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                     throw new IllegalStateException("Channel could not be created.", e);
                 }
 
-                if(!exchange.equals("")){
+                if (!exchange.equals("")) {
                     try {
                         queueName = channel.queueDeclare().getQueue();
                     } catch (IOException e) {
@@ -97,18 +97,18 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                 Class<?>[] params = method.getParameterTypes();
 
                 //If there are two parameters
-                if(parameterCount == 2){
+                if (parameterCount == 2) {
                     //If the second parameter is not MessageInfo
-                    if(!params[1].equals(MessageInfo.class)){
+                    if (!params[1].equals(MessageInfo.class)) {
                         throw new IllegalArgumentException("Second parameter in method " + method.getName() +
                                 " must be MessageInfo");
                     }
                 }
 
                 //Else
-                else if(parameterCount == 0){
+                else if (parameterCount == 0) {
                     throw new IllegalArgumentException("There must be at least 1 parameter in the method " + method.getName());
-                } else if(parameterCount > 2){
+                } else if (parameterCount > 2) {
                     throw new IllegalArgumentException("There must be at most 2 parameters in the method " + method.getName());
                 }
 
@@ -119,7 +119,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                         Object[] args = new Object[parameterCount];
 
                         //If there are two parameters
-                        if(parameterCount == 2){
+                        if (parameterCount == 2) {
                             MessageInfo messageInfo = new MessageInfo();
                             messageInfo.setChannel(this.getChannel());
                             messageInfo.setConsumerTag(consumerTag);
@@ -134,8 +134,8 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
 
                         //Create a message
                         //Check if the method expects a string
-                        if(params[0].equals(String.class)){
-                            try{
+                        if (params[0].equals(String.class)) {
+                            try {
                                 args[0] = params[0].cast(SerializationUtil.deserialize(body));
 
                                 try {
@@ -145,7 +145,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                                 }
                             } catch (ClassNotFoundException e) {
                                 LOG.severe(e.getLocalizedMessage());
-                            } catch(Exception e){
+                            } catch (Exception e) {
                                 args[0] = new String(body, StandardCharsets.UTF_8);
 
                                 try {
@@ -155,7 +155,7 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                                 }
                             }
                         } else {
-                            try{
+                            try {
                                 args[0] = params[0].cast(SerializationUtil.deserialize(body));
 
                                 try {
@@ -165,14 +165,14 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                                 }
                             } catch (ClassNotFoundException e) {
                                 LOG.severe(e.getLocalizedMessage());
-                            } catch(Exception e){
+                            } catch (Exception e) {
                                 LOG.warning("The message received was not of type: " + params[0].getName());
                             }
                         }
                     }
                 };
 
-                if(!exchange.equals("")){
+                if (!exchange.equals("")) {
                     try {
                         channel.basicConsume(queueName, autoAck, consumer);
                     } catch (IOException e) {

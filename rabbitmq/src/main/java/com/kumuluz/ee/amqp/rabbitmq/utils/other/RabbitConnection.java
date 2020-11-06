@@ -47,12 +47,12 @@ public class RabbitConnection {
     private static final Map<String, Connection> connections = new HashMap<>();
     private static final Logger LOG = Logger.getLogger(RabbitConnection.class.getName());
 
-    public static Connection getConnection(String host){
+    public static Connection getConnection(String host) {
         Connection connection = connections.get(host);
-        if(connection == null){
+        if (connection == null) {
             ConnectionFactory connectionFactory = new ConnectionFactory();
             HostItem hostItem = ConfigLoader.getInstance().getHost(host);
-            if(hostItem.getUri() == null && hostItem.getUrl() == null){
+            if (hostItem.getUri() == null && hostItem.getUrl() == null) {
                 LOG.warning("You have to set URL or URI for the host " + host);
             } else {
                 connectionFactory.setHost(hostItem.getUrl());
@@ -130,19 +130,19 @@ public class RabbitConnection {
         return connection;
     }
 
-    public static void setConnection(Map<String, Connection> connection){
+    public static void setConnection(Map<String, Connection> connection) {
         connections.putAll(connection);
         LOG.info("Set connection " + connection.toString());
     }
 
-    public static void closeConnection(String name){
+    public static void closeConnection(String name) {
         try {
             Objects.requireNonNull(connections.get(name)).close();
             connections.remove(name);
             LOG.info("Connection " + name + " closed.");
         } catch (IOException e) {
             LOG.severe("Could not close connection: " + e.getLocalizedMessage());
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             LOG.severe("Host " + name + " does not exist.");
         }
     }
