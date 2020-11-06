@@ -30,11 +30,12 @@
 
         <kumuluzee.version>3.11.0</kumuluzee.version>
 
-        <jaxb-api.version>2.3.0</jaxb-api.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+
+        <rabbitmq.client.version>5.10.0</rabbitmq.client.version>
 
         <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
         <gpg.plugin.version>1.6</gpg.plugin.version>
-        <rabbitmq.client.version>5.6.0</rabbitmq.client.version>
     </properties>
 
     <scm>
