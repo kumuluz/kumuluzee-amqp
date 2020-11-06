@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.utils;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPConnection;
@@ -37,7 +36,6 @@ import java.util.*;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public interface ConnectionUtilInitializer extends Extension {
 
     List<AnnotatedMethod<AMQPConnection>> methodList = new ArrayList<>();

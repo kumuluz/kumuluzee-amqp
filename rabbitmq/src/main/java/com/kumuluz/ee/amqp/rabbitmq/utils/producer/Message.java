@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.producer;
 
 import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
@@ -28,7 +27,6 @@ import com.rabbitmq.client.AMQP;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class Message {
     private AMQP.BasicProperties basicProperties;
     private Object body;

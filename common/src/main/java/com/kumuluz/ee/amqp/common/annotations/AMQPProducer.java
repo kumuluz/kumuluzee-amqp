@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.annotations;
 
 import javax.enterprise.util.Nonbinding;
@@ -29,7 +28,6 @@ import java.lang.annotation.*;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @Inherited
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)

@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.producer;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPProducer;
@@ -34,6 +33,7 @@ import javax.interceptor.InvocationContext;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -42,13 +42,12 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @Priority(Interceptor.Priority.APPLICATION)
 @AMQPProducer
 @Interceptor
 public class PublisherInterceptor {
 
-    private static Logger log = Logger.getLogger(PublisherInterceptor.class.getName());
+    private static final Logger LOG = Logger.getLogger(PublisherInterceptor.class.getName());
 
     @AroundInvoke
     public Object aroundInvoke(InvocationContext invocationContext) throws Exception {
@@ -85,12 +84,12 @@ public class PublisherInterceptor {
 
         try {
             if (connection == null) {
-                log.severe("Cannot find a connection with name " + host);
+                LOG.severe("Cannot find a connection with name " + host);
             } else {
                 channel = connection.createChannel();
             }
         } catch (IOException e) {
-            log.severe("Could not create a new channel: " + e.getLocalizedMessage());
+            LOG.severe("Could not create a new channel: " + e.getLocalizedMessage());
         }
 
         //Check if it is an instance of Message
@@ -123,14 +122,16 @@ public class PublisherInterceptor {
             }
         }
 
-        for (int i = 0; i < keys.length; i++) {
+        for (String key : keys) {
             try {
-                Objects.requireNonNull(channel).basicPublish(exchange, keys[i], basicProperties, body);
+                Objects.requireNonNull(channel).basicPublish(exchange, key, basicProperties, body);
             } catch (IOException e) {
-                log.severe("Could not bind key " + keys[i] + " to exchange " + exchange + ": " + e.getLocalizedMessage());
+                LOG.log(Level.SEVERE, "Could not bind key " + key + " to exchange " + exchange + ".", e);
             }
         }
-        channel.close();
+        if (channel != null) {
+            channel.close();
+        }
 
         return result;
     }

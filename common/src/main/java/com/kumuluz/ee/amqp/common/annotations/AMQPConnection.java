@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.annotations;
 
 import javax.inject.Qualifier;
@@ -31,10 +30,8 @@ import java.lang.annotation.Target;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface AMQPConnection {
-
 }

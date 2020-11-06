@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.other;
 
 import com.kumuluz.ee.amqp.rabbitmq.config.ConfigLoader;
@@ -43,11 +42,10 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @ApplicationScoped
 public class RabbitConnection {
-    private static Map<String, Connection> connections = new HashMap<>();
-    private static Logger log = Logger.getLogger(RabbitConnection.class.getName());
+    private static final Map<String, Connection> connections = new HashMap<>();
+    private static final Logger LOG = Logger.getLogger(RabbitConnection.class.getName());
 
     public static Connection getConnection(String host){
         Connection connection = connections.get(host);
@@ -55,7 +53,7 @@ public class RabbitConnection {
             ConnectionFactory connectionFactory = new ConnectionFactory();
             HostItem hostItem = ConfigLoader.getInstance().getHost(host);
             if(hostItem.getUri() == null && hostItem.getUrl() == null){
-                log.warning("You have to set URL or URI for the host " + host);
+                LOG.warning("You have to set URL or URI for the host " + host);
             } else {
                 connectionFactory.setHost(hostItem.getUrl());
 
@@ -108,7 +106,7 @@ public class RabbitConnection {
                     try {
                         connectionFactory.setUri(hostItem.getUri());
                     } catch (URISyntaxException | KeyManagementException | NoSuchAlgorithmException e) {
-                        log.severe("Could not set URI: " + e.getLocalizedMessage());
+                        LOG.severe("Could not set URI: " + e.getLocalizedMessage());
                     }
                 }
                 if (hostItem.getWorkPoolTimeout() != null) {
@@ -125,7 +123,7 @@ public class RabbitConnection {
                     connection = connectionFactory.newConnection();
                     connections.put(host, connection);
                 } catch (IOException | TimeoutException e) {
-                    log.severe("Could not create connection: " + e.getLocalizedMessage());
+                    LOG.severe("Could not create connection: " + e.getLocalizedMessage());
                 }
             }
         }
@@ -134,18 +132,18 @@ public class RabbitConnection {
 
     public static void setConnection(Map<String, Connection> connection){
         connections.putAll(connection);
-        log.info("Set connection " + connection.toString());
+        LOG.info("Set connection " + connection.toString());
     }
 
     public static void closeConnection(String name){
         try {
             Objects.requireNonNull(connections.get(name)).close();
             connections.remove(name);
-            log.info("Connection " + name + " closed.");
+            LOG.info("Connection " + name + " closed.");
         } catch (IOException e) {
-            log.severe("Could not close connection: " + e.getLocalizedMessage());
+            LOG.severe("Could not close connection: " + e.getLocalizedMessage());
         } catch (NullPointerException e){
-            log.severe("Host " + name + " does not exist.");
+            LOG.severe("Host " + name + " does not exist.");
         }
     }
 }

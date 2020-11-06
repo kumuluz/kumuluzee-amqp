@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.consumer;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPConsumer;
@@ -35,6 +34,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -43,14 +44,14 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class ConsumerInitializer implements ConsumerUtilInitializer {
 
-    private static final Logger log = Logger.getLogger(ConsumerInitializer.class.getName());
+    private static final Logger LOG = Logger.getLogger(ConsumerInitializer.class.getName());
 
     public void after(@Observes @Priority(2600) AfterDeploymentValidation adv, BeanManager bm) {
-        for (AnnotatedMethod inst : methodList) {
-            log.info("Found method " + inst.getMethod().getName() + " in class " + inst.getMethod().getDeclaringClass());
+        for (AnnotatedMethod<AMQPConsumer> inst : methodList) {
+            LOG.info("Found method " + inst.getMethod().getName() + " in class " +
+                    inst.getMethod().getDeclaringClass());
         }
 
         if (methodList.size() > 0) {
@@ -65,61 +66,42 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                 int prefetch = annotation.prefetch();
 
                 Connection connection = RabbitConnection.getConnection(host);
-                Channel channel = null;
+                Channel channel;
                 String queueName = null;
 
                 try {
                     channel = connection.createChannel();
                     channel.basicQos(prefetch);
                 } catch (IOException e) {
-                    log.severe("Channel could not be created: " + e.getLocalizedMessage());
+                    throw new IllegalStateException("Channel could not be created.", e);
                 }
 
                 if(!exchange.equals("")){
                     try {
                         queueName = channel.queueDeclare().getQueue();
                     } catch (IOException e) {
-                        log.severe("Queue could not be created for exchange " + exchange + ": " + e.getLocalizedMessage());
+                        LOG.log(Level.SEVERE, "Queue could not be created for exchange " + exchange + ".", e);
                     }
 
-                    for(int i = 0; i < key.length; i++){
+                    for (String s : key) {
                         try {
-                            channel.queueBind(queueName, exchange, key[i]);
+                            channel.queueBind(queueName, exchange, s);
                         } catch (IOException e) {
-                            log.severe("Queue could not be bound to exchange " + exchange + " with key " + key[i] + ": " + e.getLocalizedMessage());
+                            LOG.log(Level.SEVERE, "Queue could not be bound to exchange " + exchange +
+                                    " with key " + s + ".", e);
                         }
                     }
                 }
 
-                /*DeliverCallback deliverCallback = (consumerTag, message) -> {
-                    Object body = null;
-                    try {
-                        if(message.getProperties().getContentType().equals("text/plain")){
-                            body = new String(message.getBody(), "UTF-8");
-                        } else {
-                            body = SerializationUtil.getInstance().deserialize(message.getBody());
-                        }
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    Object[] args = new Object[]{consumerTag, message.getEnvelope(), message.getProperties(), body};
-
-                    try {
-                        method.invoke(inst.getBean().getBeanClass().getDeclaredConstructor().newInstance(), args);
-                    } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
-                };*/
-
                 int parameterCount = method.getParameterCount();
-                Class[] params = method.getParameterTypes();
+                Class<?>[] params = method.getParameterTypes();
 
                 //If there are two parameters
                 if(parameterCount == 2){
                     //If the second parameter is not MessageInfo
                     if(!params[1].equals(MessageInfo.class)){
-                        throw new IllegalArgumentException("Second parameter in method " + method.getName() + " must be MessageInfo");
+                        throw new IllegalArgumentException("Second parameter in method " + method.getName() +
+                                " must be MessageInfo");
                     }
                 }
 
@@ -132,8 +114,8 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
 
                 Consumer consumer = new DefaultConsumer(channel) {
                     @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-                            throws IOException {
+                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+                                               byte[] body) {
                         Object[] args = new Object[parameterCount];
 
                         //If there are two parameters
@@ -147,7 +129,8 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                             args[1] = messageInfo;
                         }
 
-                        Object instance = bm.getReference(inst.getBean(), method.getDeclaringClass(), bm.createCreationalContext(inst.getBean()));
+                        Object instance = bm.getReference(inst.getBean(), method.getDeclaringClass(),
+                                bm.createCreationalContext(inst.getBean()));
 
                         //Create a message
                         //Check if the method expects a string
@@ -158,17 +141,17 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                                 try {
                                     method.invoke(instance, args);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
-                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                    LOG.log(Level.SEVERE, "Method could not be invoked.", e);
                                 }
                             } catch (ClassNotFoundException e) {
-                                log.severe(e.getLocalizedMessage());
+                                LOG.severe(e.getLocalizedMessage());
                             } catch(Exception e){
-                                args[0] = new String(body, "UTF-8");
+                                args[0] = new String(body, StandardCharsets.UTF_8);
 
                                 try {
                                     method.invoke(instance, args);
                                 } catch (IllegalAccessException | InvocationTargetException ex) {
-                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                    LOG.log(Level.SEVERE, "Method could not be invoked.", e);
                                 }
                             }
                         } else {
@@ -178,12 +161,12 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                                 try {
                                     method.invoke(instance, args);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
-                                    log.severe("Method could not be invoked: " + e.getLocalizedMessage());
+                                    LOG.log(Level.SEVERE, "Method could not be invoked.", e);
                                 }
                             } catch (ClassNotFoundException e) {
-                                log.severe(e.getLocalizedMessage());
+                                LOG.severe(e.getLocalizedMessage());
                             } catch(Exception e){
-                                log.warning("The message received was not of type: " + params[0].getName());
+                                LOG.warning("The message received was not of type: " + params[0].getName());
                             }
                         }
                     }
@@ -193,15 +176,15 @@ public class ConsumerInitializer implements ConsumerUtilInitializer {
                     try {
                         channel.basicConsume(queueName, autoAck, consumer);
                     } catch (IOException e) {
-                        log.severe("Channel could not consume: " + e.getLocalizedMessage());
+                        LOG.log(Level.SEVERE, "Channel could not consume.", e);
                     }
                 } else {
-                    for(int i = 0; i < key.length; i++){
+                    for (String s : key) {
                         try {
-                            channel.basicConsume(key[i], autoAck, consumer);
+                            channel.basicConsume(s, autoAck, consumer);
                         } catch (IOException e) {
-                            log.severe("Channel could not consume: " + e.getLocalizedMessage());
-                    }
+                            LOG.log(Level.SEVERE, "Channel could not consume.", e);
+                        }
                     }
                 }
 

@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.utils;
 
 import java.io.*;
@@ -27,10 +26,7 @@ import java.io.*;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class SerializationUtil {
-
-    private static SerializationUtil instance;
 
     public static byte[] serialize(Object object) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

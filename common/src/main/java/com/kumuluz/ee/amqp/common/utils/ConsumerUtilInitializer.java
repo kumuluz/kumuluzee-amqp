@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.utils;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPConsumer;
@@ -37,7 +36,6 @@ import java.util.*;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public interface ConsumerUtilInitializer extends Extension {
 
     List<AnnotatedMethod<AMQPConsumer>> methodList = new ArrayList<>();

@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.other;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPConnection;
@@ -44,21 +43,24 @@ import java.util.logging.Logger;
 
 public class ConnectionInitializer implements ConnectionUtilInitializer {
 
-    private static Logger log = Logger.getLogger(ConnectionInitializer.class.getName());
+    private static final Logger LOG = Logger.getLogger(ConnectionInitializer.class.getName());
 
     @Override
     public void after(@Observes @Priority(2500) AfterDeploymentValidation adv, BeanManager bm) {
-        for (AnnotatedMethod inst : methodList) {
-            log.info("Found method " + inst.getMethod().getName() + " in class " + inst.getMethod().getDeclaringClass());
+        for (AnnotatedMethod<AMQPConnection> inst : methodList) {
+            LOG.info("Found method " + inst.getMethod().getName() + " in class " +
+                    inst.getMethod().getDeclaringClass());
         }
 
         if (methodList.size() > 0) {
             for (AnnotatedMethod<AMQPConnection> inst : methodList) {
-                Object instance = bm.getReference(inst.getBean(), inst.getMethod().getDeclaringClass(), bm.createCreationalContext(inst.getBean()));
+                Object instance = bm.getReference(inst.getBean(), inst.getMethod().getDeclaringClass(),
+                        bm.createCreationalContext(inst.getBean()));
                 try {
-                    RabbitConnection.setConnection((HashMap<String, Connection>) inst.getMethod().invoke(instance, null));
+                    RabbitConnection.setConnection((HashMap<String, Connection>) inst.getMethod()
+                            .invoke(instance, null));
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    log.severe("Cannot create a new connection: " + e.getLocalizedMessage());
+                    LOG.severe("Cannot create a new connection: " + e.getLocalizedMessage());
                 }
             }
         }

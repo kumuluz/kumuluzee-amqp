@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.config;
 
 import com.kumuluz.ee.amqp.rabbitmq.utils.other.RabbitConnection;
@@ -27,6 +26,7 @@ import com.rabbitmq.client.Connection;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -35,29 +35,28 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class HostInitializer {
 
     private static HostInitializer instance;
-    private static Logger log = Logger.getLogger(HostInitializer.class.getName());
+    private static final Logger LOG = Logger.getLogger(HostInitializer.class.getName());
 
     public void initializeRabbitmq(){
         List<HostItem> hosts = ConfigLoader.getInstance().getHostsData();
         for(HostItem host : hosts){
             Connection connection = RabbitConnection.getConnection(host.getName());
-            Channel channel = null;
+            Channel channel;
 
             try {
                 channel = connection.createChannel();
             } catch (IOException e) {
-                log.severe("Could not create channel: " + e.getLocalizedMessage());
+                throw new IllegalStateException("Could not create channel.", e);
             }
 
             for(Exchange exchange : host.getExchanges()){
                 try {
                     channel.exchangeDeclare(exchange.getName(), exchange.getType(), exchange.isDurable(), exchange.isAutoDelete(), exchange.getArguments());
                 } catch (IOException e) {
-                    log.severe("Could not create an exchange: " + e.getLocalizedMessage());
+                    LOG.log(Level.SEVERE, "Could not create an exchange: ", e);
                 }
             }
 
@@ -65,7 +64,7 @@ public class HostInitializer {
                 try{
                     channel.queueDeclare(queue.getName(), queue.isDurable(), queue.isExclusive(), queue.isAutoDelete(), queue.getArguments());
                 } catch (IOException e) {
-                    log.severe("Could not create a queue: " + e.getLocalizedMessage());
+                    LOG.log(Level.SEVERE, "Could not create a queue: ", e);
                 }
             }
         }

@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.producer;
 
 import com.kumuluz.ee.amqp.common.annotations.AMQPChannel;
@@ -38,11 +37,10 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @ApplicationScoped
 public class ChannelUtil {
 
-    private static Logger log = Logger.getLogger(ChannelUtil.class.getName());
+    private static final Logger LOG = Logger.getLogger(ChannelUtil.class.getName());
 
     @Produces
     @AMQPChannel
@@ -54,7 +52,7 @@ public class ChannelUtil {
         try {
             channel = connection.createChannel();
         } catch (IOException e) {
-            log.severe("Could not create channel: " + e.getLocalizedMessage());
+            LOG.severe("Could not create channel: " + e.getLocalizedMessage());
         }
 
         return channel;

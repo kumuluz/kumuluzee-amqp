@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils.consumer;
 
 import com.rabbitmq.client.AMQP;
@@ -29,7 +28,6 @@ import com.rabbitmq.client.Envelope;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class MessageInfo {
     private String consumerTag;
     private Envelope envelope;

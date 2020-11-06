@@ -18,12 +18,10 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.common.utils;
 
 import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 /**
  * A class for saving annotated methods
@@ -31,23 +29,22 @@ import java.lang.reflect.Proxy;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 public class AnnotatedMethod<T> {
-    private Bean bean;
+    private Bean<?> bean;
     private Method method;
     private T annotation;
 
-    public AnnotatedMethod(Bean bean, Method method, T annotation) {
+    public AnnotatedMethod(Bean<?> bean, Method method, T annotation) {
         this.bean = bean;
         this.method = method;
         this.annotation = annotation;
     }
 
-    public Bean getBean() {
+    public Bean<?> getBean() {
         return bean;
     }
 
-    public void setBean(Bean bean) {
+    public void setBean(Bean<?> bean) {
         this.bean = bean;
     }
 

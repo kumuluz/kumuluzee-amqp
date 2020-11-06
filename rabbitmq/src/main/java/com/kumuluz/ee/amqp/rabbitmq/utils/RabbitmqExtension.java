@@ -18,7 +18,6 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.kumuluz.ee.amqp.rabbitmq.utils;
 
 import com.kumuluz.ee.common.Extension;
@@ -37,7 +36,6 @@ import java.util.logging.Logger;
  * @author Blaž Mrak
  * @since 1.0.0
  */
-
 @EeExtensionDef(name = "RabbitMQ", group = EeExtensionGroup.AMQP)
 @EeComponentDependency(EeComponentType.CDI)
 public class RabbitmqExtension implements Extension {
@@ -45,7 +43,7 @@ public class RabbitmqExtension implements Extension {
     private static final Logger log = Logger.getLogger(RabbitmqExtension.class.getName());
 
     public void init(KumuluzServerWrapper kumuluzServerWrapper, EeConfig eeConfig) {
-        log.info("Initialising Kumuluz Messaging extension.");
+        log.info("Initialising KumuluzEE Messaging extension.");
     }
 
     public void load() {
