@@ -32,7 +32,7 @@
 
         <jaxb-api.version>2.3.1</jaxb-api.version>
 
-        <rabbitmq.client.version>5.10.0</rabbitmq.client.version>
+        <rabbitmq.client.version>5.18.0</rabbitmq.client.version>
 
         <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
         <gpg.plugin.version>1.6</gpg.plugin.version>
